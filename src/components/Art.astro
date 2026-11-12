@@ -1,0 +1,18 @@
+---
+
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+interface Props { src: string; label: string; ratio?: string; class?: string }
+const { src, label, ratio = '4 / 3', class: cls } = Astro.props;
+const ready = existsSync(join(process.cwd(), 'public', src));
+---
+{ready
+  ? <img class:list={['art', cls]} src={src} alt="" aria-hidden="true" decoding="async" />
+  : <div class:list={['art placeholder', cls]} style={`aspect-ratio:${ratio}`} aria-hidden="true"><span>{label}</span></div>}
+
+<style>
+  .art { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+  .placeholder { display: grid; place-items: center; background: repeating-linear-gradient(45deg, rgba(255,255,255,.35) 0 10px, transparent 10px 20px); border: 2px dashed rgba(11,31,11,.45); }
+  .placeholder span { font-family: var(--mono); font-size: 13px; color: rgba(11,31,11,.7); background: rgba(255,250,235,.85); padding: 4px 8px; }
+</style>

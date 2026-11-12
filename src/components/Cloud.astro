@@ -1,0 +1,72 @@
+---
+import { CLOUD_PX } from '../data/content';
+
+interface Props {
+  n: 1 | 2 | 3 | 4 | 5;
+  scale?: number;
+  x?: string;
+  y?: string;
+  speed?: number;
+  hspeed?: number;
+  front?: boolean;
+  flip?: boolean;
+}
+const { n, scale = 2, x = '0', y = '0', hspeed, front = false, flip = false } = Astro.props;
+
+let h = 2166136261;
+for (const c of `${n}|${scale}|${x}|${y}`) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+const rnd = (k: number) => { const v = Math.sin(h * (k + 1)) * 10000; return v - Math.floor(v); };
+
+const depth = Math.min(1, (CLOUD_PX[n] * scale) / 1000);
+const speed = Astro.props.speed ?? -(0.12 + depth * 0.5 + rnd(1) * 0.15);
+
+const drift = {
+  dx: Math.round(28 + rnd(2) * 44) * (rnd(3) > 0.5 ? 1 : -1),
+  dy: Math.round(4 + rnd(4) * 8),
+  dur: (12 + rnd(5) * 14).toFixed(1),
+  delay: (-rnd(6) * 26).toFixed(1),
+};
+const mobile = Math.max(1, Math.floor(scale / 2));
+---
+<span
+  class:list={['cloud', { front, flip }]}
+  aria-hidden="true"
+  data-speed={hspeed === undefined ? speed.toFixed(3) : undefined}
+  data-hspeed={hspeed}
+  style={`--native:${CLOUD_PX[n]};--s:${scale};--sm:${mobile};--dx:${drift.dx}px;--dy:${drift.dy}px;--dur:${drift.dur}s;--delay:${drift.delay}s;left:${x};top:${y}`}
+>
+  <img class="day" src={`/clouds/Cloud_0${n}.svg`} alt="" decoding="async" />
+  <img class="dusk" src={`/clouds/Cloud_0${n}-dusk.svg`} alt="" decoding="async" loading="lazy" data-dusk />
+</span>
+
+<style>
+  .cloud {
+    display: block;
+    position: absolute;
+    width: calc(var(--native) * var(--s) * 1px);
+    max-width: none;
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    will-change: transform, translate;
+
+    animation: drift var(--dur) ease-in-out var(--delay) infinite;
+  }
+  .cloud img { display: block; width: 100%; max-width: none; height: auto; }
+  .cloud .dusk { position: absolute; inset: 0; opacity: 0; will-change: opacity; }
+  .front { z-index: 3; }
+  .flip { scale: -1 1; }
+  @keyframes drift {
+    0%, 100% { translate: 0 0; }
+    25% { translate: calc(var(--dx) * .5) calc(var(--dy) * -1); }
+    50% { translate: var(--dx) 0; }
+    75% { translate: calc(var(--dx) * .5) var(--dy); }
+  }
+  @media (max-width: 767px) {
+    .cloud { width: calc(var(--native) * var(--sm) * 1px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cloud { animation: none; }
+  }
+</style>

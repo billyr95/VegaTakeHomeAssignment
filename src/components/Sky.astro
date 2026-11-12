@@ -1,0 +1,14 @@
+---
+---
+<div class="sky" aria-hidden="true">
+  <i class="sky-noon" data-sky="noon"></i>
+  <i class="sky-dusk" data-sky="dusk"></i>
+</div>
+
+<style>
+  .sky, .sky i { position: fixed; left: 0; right: 0; top: 0; height: 100lvh; pointer-events: none; }
+  .sky { z-index: -1; background: var(--sky-morning); }
+  .sky i { opacity: 0; will-change: opacity; }
+  .sky-noon { background: var(--sky-noon); }
+  .sky-dusk { background: var(--sky-dusk); }
+</style>

@@ -1,0 +1,77 @@
+---
+
+const flocks = [
+  { cls: 'near', birds: 7 },
+  { cls: 'far', birds: 5 },
+];
+
+const vSlot = (k: number) => {
+  const rank = Math.ceil(k / 2), side = k % 2 ? 1 : -1;
+  return `--x:${side * rank};--y:${-rank};--d:${(-((k * 37) % 11) / 10).toFixed(1)}s`;
+};
+---
+<div class="hero-sky" aria-hidden="true">
+  <div class="ufo"><i></i></div>
+  {flocks.map((f) => (
+    <div class:list={['flock', f.cls]}>
+      {Array.from({ length: f.birds }, (_, k) => <i class="bird" style={vSlot(k)}></i>)}
+    </div>
+  ))}
+</div>
+
+<style>
+
+  .hero-sky { position: absolute; inset: 0; pointer-events: none; overflow: clip; }
+
+  .flock { --b: 27px; position: absolute; z-index: 1; left: 0; top: 13%; animation: sky-fly 18s linear -3s infinite; }
+  .flock.far { --b: 18px; z-index: 0; top: 7%; opacity: .45; animation-duration: 28s; animation-delay: -17s; }
+
+  @keyframes sky-fly {
+    0%   { transform: translateX(-30vw); }
+    65%  { transform: translateX(130vw); }
+    100% { transform: translateX(130vw); }
+  }
+  .bird {
+    position: absolute; width: var(--b); aspect-ratio: 9 / 5;
+    left: calc(var(--x) * var(--b) * 1.15); top: calc(var(--y) * var(--b) * 1.05);
+    background: url('/art/bird.svg') 0 0 / 200% 100% no-repeat; image-rendering: pixelated;
+    animation: sky-flap .5s steps(2, jump-none) var(--d) infinite alternate, sky-bob 2.4s ease-in-out var(--d) infinite;
+  }
+  @keyframes sky-flap { to { background-position-x: 100%; } }
+  @keyframes sky-bob { 50% { translate: 0 -4px; } }
+
+  .ufo { --u: 4px; position: absolute; z-index: 0; left: 76%; top: 64%; width: calc(24 * var(--u)); aspect-ratio: 24 / 10; opacity: .8; animation: ufo-roam 26s steps(60, end) infinite; }
+  .ufo i { position: absolute; inset: 0; background: url('/art/ufo.svg') 0 0 / 200% 100% no-repeat; image-rendering: pixelated; animation: ufo-blink .9s steps(2, jump-none) infinite alternate, ufo-hover 3s ease-in-out infinite; }
+  @keyframes ufo-blink { to { background-position-x: 100%; } }
+  @keyframes ufo-hover { 50% { translate: 0 calc(var(--u) * -1.5); } }
+
+  @keyframes ufo-roam {
+    0%   { translate: 0 0; }
+    35%  { translate: 6vw 1vh; }
+    62%  { translate: 2vw -1vh; }
+    63%  { translate: -54vw 8vh; }
+    86%  { translate: -50vw 7vh; }
+    87%  { translate: 0 0; }
+    100% { translate: 0 0; }
+  }
+
+  @media (max-width: 767px) {
+    .flock { --b: 18px; top: 9%; animation-duration: 12s; }
+    .flock.far { --b: 12px; top: 5%; animation-duration: 19s; }
+    .ufo { --u: 3px; left: 66%; top: 12%; }
+    @keyframes ufo-roam {
+      0%   { translate: 0 0; }
+      35%  { translate: 4vw 1vh; }
+      62%  { translate: 1vw -1vh; }
+      63%  { translate: -50vw 4vh; }
+      86%  { translate: -47vw 3vh; }
+      87%  { translate: 0 0; }
+      100% { translate: 0 0; }
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flock, .bird, .ufo, .ufo i { animation: none; }
+    .flock { transform: translateX(22vw); }
+    .flock.far { transform: translateX(58vw); }
+  }
+</style>

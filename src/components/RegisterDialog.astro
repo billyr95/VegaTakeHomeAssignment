@@ -1,0 +1,159 @@
+---
+
+import Window from './Window.astro';
+import { countries } from '../data/content';
+---
+<dialog class="register" data-register-dialog data-lenis-prevent aria-labelledby="register-title">
+  <div class="scene">
+    <div class="flower" aria-hidden="true"><i class="fl-cloud"></i><i class="fl-plant"></i></div>
+
+    <Window class="form-window" label="Book a Demo" closable>
+      <h2 id="register-title" class="visually-hidden">Book a demo with Vega</h2>
+
+      <form class="form" data-register-form>
+        <div class="row">
+          <label>First name<input name="firstName" autocomplete="given-name" required autofocus /></label>
+          <label>Last name<input name="lastName" autocomplete="family-name" required /></label>
+        </div>
+        <label>Work email<input name="email" type="email" autocomplete="email" placeholder="you@company.com" required /></label>
+        <div class="row">
+          <label>Company<input name="company" autocomplete="organization" required /></label>
+          <label>Job title<input name="jobTitle" autocomplete="organization-title" /></label>
+        </div>
+        <label>Country
+          <select name="country" autocomplete="country-name" required>
+            <option value="" selected disabled>Select an option</option>
+            {countries.map((c) => <option>{c}</option>)}
+          </select>
+        </label>
+        <label class="check"><input type="checkbox" name="consent" /> I agree to receive communications from Vega.</label>
+        <button class="btn submit" type="submit">Submit</button>
+        <p class="fine">
+          We are committed to your privacy. Vega.io uses the information provided to contact you regarding relevant
+          content, products, and services. You may unsubscribe from these communications at any time. Check out our
+          <a href="https://vega.io/privacy">Privacy Policy</a>.
+        </p>
+      </form>
+
+    </Window>
+  </div>
+</dialog>
+
+<style>
+
+  .register { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: none; overflow: hidden; color: var(--ink); }
+  .register::backdrop { background: rgb(21 21 20 / 50%); }
+
+  .scene { --fw: min(72vw, 130vh); --shift: max(0px, calc((100vw - var(--fw) * .72 - 570px) / 2 - 4vw));
+    position: relative; width: 100%; height: 100%; display: grid; align-items: center; justify-items: start; padding: 24px 5vw; overflow-y: auto; }
+
+  .flower {
+    position: absolute; z-index: 0; left: calc(-4vw + var(--shift)); bottom: -5vh;
+    width: var(--fw); aspect-ratio: 500 / 364; pointer-events: none;
+  }
+  .fl-cloud, .fl-plant { position: absolute; inset: 0; background-repeat: no-repeat; image-rendering: pixelated; }
+  .fl-cloud { background-image: url('/art/flower-cloud.png'); background-size: 100% 100%; transform-origin: 50% 85%; }
+  .fl-plant { background-image: url('/art/flower-plant.png'); background-size: 800% 100%; transform-origin: 50% 87%; }
+
+  .register :global(.form-window) {
+    width: min(570px, 100%);
+    margin-left: max(0px, min(calc(var(--fw) * .72 - 9vw + var(--shift)), calc(90vw - min(570px, 90vw))));
+  }
+  .register :global(.form-window .body) { padding: 22px 16px 24px; }
+
+  .form { display: grid; gap: 18px; font-family: var(--mono); font-size: 13px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  label { display: grid; gap: 10px; }
+  input, select { font: inherit; color: var(--ink); width: 100%; min-height: 34px; padding: 6px 12px; background: #fff; border: 1px solid #c9cbc4; border-radius: 0; }
+  input::placeholder { color: #9a9f95; }
+  input:focus-visible, select:focus-visible { outline: 2px solid var(--ink); outline-offset: 0; border-color: var(--ink); }
+  .check { display: flex; align-items: center; gap: 10px; }
+  .check input { width: 18px; min-height: 18px; margin: 0; accent-color: var(--ink); }
+  .submit { justify-self: start; min-height: 32px; padding: 0 12px; font-size: 13px; }
+  .fine { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+
+  .register[open]::backdrop { animation: dim .35s ease-out both; }
+  .register[open] .fl-cloud { animation: puff .4s steps(5, end) .05s both; }
+  .register[open] .fl-plant { animation: grow .9s steps(14, end) .35s both, sway 1s steps(8, end) 1.25s infinite; }
+  .register[open] :global(.form-window) { animation: pop .42s steps(6, end) 1.05s both; }
+  @keyframes dim { from { opacity: 0; } }
+  @keyframes puff {
+    0%   { opacity: 0; transform: scale(.6, .4); }
+    1%   { opacity: 1; }
+    70%  { transform: scale(1.05, 1.08); }
+    100% { opacity: 1; transform: none; }
+  }
+
+  @keyframes grow {
+    0%   { clip-path: inset(87% 0 0 0); transform: scaleY(.8); }
+    70%  { clip-path: inset(0 0 0 0);   transform: scaleY(1.04); }
+    100% { clip-path: inset(0 0 0 0);   transform: none; }
+  }
+
+  @keyframes sway { from { background-position-x: 0; } to { background-position-x: 114.2857%; } }
+  @keyframes pop {
+    0%   { opacity: 0; transform: scale(.5); }
+    1%   { opacity: 1; }
+    70%  { transform: scale(1.05); }
+    100% { opacity: 1; transform: none; }
+  }
+
+  .register.closing::backdrop { animation: dim .25s ease-in reverse both; }
+  .register.closing :global(.form-window) { animation: pop .2s steps(3, end) reverse both; }
+  .register.closing .fl-plant { animation: grow .28s steps(4, end) reverse both; }
+  .register.closing .fl-cloud { animation: puff .25s steps(3, end) .1s reverse both; }
+
+  @media (max-width: 767px) {
+    .scene { display: block; justify-items: normal; padding: 16px; }
+    .register :global(.form-window) { margin-left: 0; }
+    .flower { display: none; }
+    .register[open] :global(.form-window) { animation-delay: .15s; }
+    .row { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .register[open] .flower, .register[open] :global(.form-window) { animation: dim .2s ease-out both; }
+    .register[open] .fl-cloud, .register[open] .fl-plant { animation: none; }
+    .register.closing .flower, .register.closing :global(.form-window) { animation: dim .15s ease-in reverse both; }
+    .register.closing .fl-cloud, .register.closing .fl-plant { animation: none; }
+  }
+</style>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-register-dialog]');
+  const form = dialog?.querySelector<HTMLFormElement>('[data-register-form]');
+  const root = document.documentElement;
+
+  function openDialog(e: Event) {
+    if (!dialog) return;
+    e.preventDefault();
+    dialog.classList.remove('closing');
+    dialog.showModal();
+    root.classList.add('modal-open');
+    dispatchEvent(new Event('modal:open'));
+  }
+
+  function closeDialog() {
+    if (!dialog?.open || dialog.classList.contains('closing')) return;
+    dialog.classList.add('closing');
+    const finish = () => {
+      dialog.classList.remove('closing');
+      dialog.close();
+      root.classList.remove('modal-open');
+      dispatchEvent(new Event('modal:close'));
+    };
+
+    const anims = dialog.getAnimations({ subtree: true }).filter((a) => a.effect?.getTiming().iterations !== Infinity);
+    anims.length ? Promise.all(anims.map((a) => a.finished)).then(finish, finish) : finish();
+  }
+
+  document.querySelectorAll('[data-register]').forEach((el) => el.addEventListener('click', openDialog));
+  dialog?.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', closeDialog));
+
+  dialog?.addEventListener('cancel', (e) => { e.preventDefault(); closeDialog(); });
+
+  dialog?.addEventListener('click', (e) => {
+    if (!(e.target as HTMLElement).closest('.form-window')) closeDialog();
+  });
+
+  form?.addEventListener('submit', (e) => e.preventDefault());
+</script>

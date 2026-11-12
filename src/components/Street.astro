@@ -1,0 +1,252 @@
+---
+---
+<div class="street" data-street>
+  <div class="layer far" data-depth="0.55"></div>
+  <div class="layer towers" data-depth="0.32"></div>
+  <div class="layer near" data-depth="0.12"></div>
+  <div class="javits" aria-hidden="true">
+    <img src="/art/javits.svg" alt="" decoding="async" />
+    <img class="dusk" src="/art/javits-dusk.svg" alt="" decoding="async" loading="lazy" />
+  </div>
+  <div class="overlay"><slot /></div>
+  <div class="layer ground sidewalk"></div>
+  <div class="sam" aria-hidden="true" data-sam><i class="s idle on"></i><i class="s run"></i></div>
+  <div class="pal" aria-hidden="true" data-pal><i class="s pizza on"></i></div>
+
+  <div class="street-ufo" aria-hidden="true" data-ufo hidden><i class="beam" data-beam></i><i class="craft"></i></div>
+
+  <div class="bubble" data-bubble role="group" aria-label="Sam asks" hidden>
+    <p data-bubble-text>Was that UFO supposed to be there?</p>
+    <div class="answers" data-answers>
+      <button type="button" class="btn yes" data-yes>Yes</button>
+      <button type="button" class="no" data-no>No</button>
+    </div>
+  </div>
+  <div class="layer ground road"></div>
+</div>
+
+<style>
+
+  .street { --k: 1; --cut: 440px; position: relative; height: calc(1460px * var(--k) - var(--cut)); overflow-x: clip; overflow-y: visible; }
+  @media (max-width: 767px) { .street { --k: .5; --cut: 0px; } }
+
+  .layer { position: absolute; left: 0; right: 0; background-repeat: repeat-x; image-rendering: pixelated; will-change: transform; }
+  .far    { bottom: calc(820px * var(--k) - var(--cut)); height: calc(590px * var(--k));  background-image: url('/city/city-far.png');    background-size: calc(1152px * var(--k)) 100%; background-position: center bottom; }
+  .towers { bottom: calc(520px * var(--k) - var(--cut)); height: calc(510px * var(--k));  background-image: url('/city/city-towers.png'); background-size: calc(2304px * var(--k)) 100%; background-position: center bottom; }
+
+  .far::after { content: ''; position: absolute; left: 0; right: 0; top: 100%; height: calc(820px * var(--k) - var(--cut)); background: color-mix(in srgb, #9E7DC4 calc(var(--dusk, 0) * 100%), #609de9); }
+
+  .far    { --dusk-img: url('/city/city-far-dusk.png'); }
+  .towers { --dusk-img: url('/city/city-towers-dusk.png'); }
+  .near   { --dusk-img: url('/city/city-near-dusk.png'); }
+  .far::before, .towers::before, .near::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: inherit; background-image: var(--dusk-img);
+    opacity: var(--dusk, 0);
+  }
+  .near   { bottom: calc(190px * var(--k)); height: calc(1108px * var(--k) - var(--cut)); background-image: url('/city/city-near.png');   background-size: calc(2304px * var(--k)) calc(1108px * var(--k)); background-position: center top; }
+
+  .ground   { left: calc(-256px * var(--k)); right: calc(-256px * var(--k)); }
+  .sidewalk { bottom: calc(107px * var(--k)); height: calc(83px * var(--k));  background-image: url('/city/sidewalk-tile.png'); background-size: calc(256px * var(--k)) 100%; z-index: 2; }
+  .road     { bottom: 0;                       height: calc(107px * var(--k)); background-image: url('/city/road-tile.png');     background-size: calc(256px * var(--k)) 100%; z-index: 4; }
+
+  .javits { --jx: 1; position: absolute; z-index: 1; left: 50%; translate: -50% 0; bottom: calc(188px * var(--k)); width: calc(329px * var(--jx)); }
+  .javits img { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+  .javits .dusk { position: absolute; inset: 0; opacity: var(--dusk, 0); }
+  @media (min-width: 768px) { .javits { --jx: 2; } }
+
+  @media (min-width: 1180px) { .javits { left: auto; right: 2vw; translate: none; } }
+  @media (min-width: 1920px) { .javits { --jx: 3; } }
+
+  .overlay {
+    position: absolute; left: 0; right: 0; bottom: calc(190px * var(--k)); z-index: 3;
+    height: min(calc(100% - 190px * var(--k)), calc(100svh - 190px * var(--k)));
+    display: grid; place-items: center; padding: 24px 20px;
+  }
+
+  @media (max-width: 1179px) { .overlay { align-items: start; padding-top: max(20px, 4vh); } }
+  @media (min-width: 1180px) { .overlay { justify-items: start; padding-left: 4vw; } }
+  @media (min-width: 1180px) and (max-width: 1439px) { .overlay > :global(*) { max-width: 500px; } }
+
+  @media (min-width: 1600px) and (min-height: 860px) { .overlay { justify-items: center; align-items: start; padding-left: 20px; padding-top: max(24px, 4vh); } }
+
+  .sam { --size: calc(180px * var(--k)); position: absolute; z-index: 3; left: 18%; bottom: calc(118px * var(--k)); width: var(--size); height: var(--size); }
+  @media (max-width: 767px) { .sam { left: 8%; } }
+
+  .sam { will-change: transform; }
+
+  .pal { --size: calc(180px * var(--k)); position: absolute; z-index: 3; left: 64%; bottom: calc(118px * var(--k)); width: var(--size); height: var(--size); scale: -1 1; }
+  @media (max-width: 767px) { .pal { left: 62%; } }
+  .s { position: absolute; inset: 0; background-repeat: no-repeat; background-size: auto 100%; image-rendering: pixelated; opacity: 0; }
+  .s.on { opacity: 1; }
+  .idle  { background-image: url('/sprites/idle.png');       animation: sam-idle 3.3s steps(33) infinite; }
+  .run   { background-image: url('/sprites/run.png');        animation: sam-run .42s steps(4) infinite; }
+  .pizza { background-image: url('/sprites/mole-pizza.png'); animation: sam-pizza 2.4s steps(21) infinite; }
+  @keyframes sam-idle  { to { background-position-x: calc(var(--size) * -33); } }
+  @keyframes sam-run   { to { background-position-x: calc(var(--size) * -4); } }
+  @keyframes sam-pizza { to { background-position-x: calc(var(--size) * -21); } }
+
+  .bubble {
+    position: absolute; z-index: 6; left: 0; bottom: 0; width: max-content; max-width: min(300px, calc(100vw - 32px));
+    padding: 12px 14px; background: var(--paper); border: 1.5px solid var(--ink); box-shadow: 4px 4px 0 var(--ink);
+    font-family: var(--mono); font-size: 13px; line-height: 1.4; color: var(--ink);
+    animation: bubble-in .25s steps(4, end) both;
+  }
+
+  .bubble::after { content: ''; position: absolute; left: var(--tail, 50%); top: 100%; width: 12px; height: 10px; translate: -50% 0;
+    background: var(--ink); clip-path: polygon(0 0, 100% 0, 100% 40%, 66% 40%, 66% 70%, 33% 70%, 33% 100%, 0 100%); }
+  .bubble p { margin: 0; font-family: var(--pixel); font-size: 19px; line-height: 1.15; }
+  .answers { display: flex; align-items: center; gap: 16px; margin-top: 10px; }
+  .answers .yes { min-height: 32px; padding: 0 14px; font-size: 13px; }
+  .answers .no { padding: 4px 2px; background: none; border: 0; font: inherit; color: var(--ink); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+  .answers .no:hover { text-decoration-thickness: 2px; }
+  @keyframes bubble-in { from { opacity: 0; translate: 0 8px; } }
+
+  .street-ufo { --u: 6px; position: absolute; z-index: 5; left: 0; top: 0; width: calc(24 * var(--u)); aspect-ratio: 24 / 10; will-change: transform; }
+  @media (max-width: 767px) { .street-ufo { --u: 4px; } }
+
+  .street-ufo .craft { position: absolute; inset: 0; background: url('/art/ufo-color.svg') 0 0 / 200% 100% no-repeat; image-rendering: pixelated;
+    animation: ufo-lights .35s steps(2, jump-none) infinite alternate; }
+  @keyframes ufo-lights { to { background-position-x: 100%; } }
+
+  .street-ufo .beam { position: absolute; left: 50%; top: 70%; width: 160%; height: var(--beam, 300px); translate: -50% 0; transform-origin: 50% 0; scale: 1 0;
+    background: repeating-linear-gradient(180deg, rgb(255 246 180 / 55%) 0 8px, rgb(255 236 140 / 35%) 8px 16px);
+    clip-path: polygon(40% 0, 60% 0, 100% 100%, 0 100%); animation: beam-flicker .3s steps(2, jump-none) infinite alternate; }
+  @keyframes beam-flicker { to { opacity: .75; } }
+
+  @media (prefers-reduced-motion: reduce) { .s, .sam, .bubble, .street-ufo .craft, .street-ufo .beam { animation: none; } }
+</style>
+
+<script>
+
+  const street = document.querySelector<HTMLElement>('[data-street]');
+  const sam = street?.querySelector<HTMLElement>('[data-sam]');
+  const pal = street?.querySelector<HTMLElement>('[data-pal]');
+  const ufo = street?.querySelector<HTMLElement>('[data-ufo]');
+  const beam = street?.querySelector<HTMLElement>('[data-beam]');
+  const bubble = street?.querySelector<HTMLElement>('[data-bubble]');
+  const bubbleText = street?.querySelector<HTMLElement>('[data-bubble-text]');
+  const answers = street?.querySelector<HTMLElement>('[data-answers]');
+
+  if (street && sam && pal && ufo && beam && bubble && bubbleText && answers) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const [idleSprite, runSprite] = [...sam.querySelectorAll<HTMLElement>('.s')];
+    const narrow = () => innerWidth < 768;
+
+    const range = () => (narrow() ? [0.02, 0.42] : [0.03, 0.5]);
+    const speed = () => (narrow() ? 55 : 85);
+    const rand = (a: number, b: number) => a + Math.random() * (b - a);
+
+    let x = street.clientWidth * range()[0] + 40;
+    let dir = 1, target = x, state: 'walk' | 'pause' | 'talk' = 'pause';
+    let pauseUntil = performance.now() + 1500, last = performance.now();
+    let wantsToAsk = false, asked = false, palGone = false;
+
+    const setSprite = (walking: boolean) => { runSprite.classList.toggle('on', walking); idleSprite.classList.toggle('on', !walking); };
+    const draw = () => { sam.style.transform = `translateX(${x.toFixed(1)}px) scaleX(${dir})`; };
+
+    sam.style.left = '0';
+
+    const card = street.querySelector<HTMLElement>('.overlay > *');
+    const rel = (el: HTMLElement) => { const r = el.getBoundingClientRect(), s = street!.getBoundingClientRect(); return { l: r.left - s.left, r: r.right - s.left, t: r.top - s.top, b: r.bottom - s.top }; };
+
+    function askSpot() {
+      const [, b] = range(), w = street!.clientWidth;
+      if (!card) return x;
+      const c = rel(card);
+      return c.l < w * 0.3 && c.r < w * 0.6 ? Math.min(b * w, c.r + 16) : x;
+    }
+
+    function pickTarget() {
+      const [a, b] = range(), w = street!.clientWidth, minStep = w * 0.12;
+      let t = x;
+      if (wantsToAsk && !asked) t = askSpot();
+      else for (let i = 0; i < 8 && Math.abs(t - x) < minStep; i++) t = rand(a, b) * w;
+      target = t; dir = t >= x ? 1 : -1; state = 'walk'; setSprite(true);
+    }
+
+    function tick(now: number) {
+      const dt = Math.min(0.05, (now - last) / 1000); last = now;
+      if (state === 'walk') {
+        const step = speed() * dt * dir;
+        if (Math.abs(target - x) <= Math.abs(step)) {
+          x = target; state = 'pause'; setSprite(false);
+          if (wantsToAsk && !asked) { asked = true; state = 'talk'; setTimeout(ask, 500); }
+          else pauseUntil = now + rand(1200, 3600);
+        } else x += step;
+        draw();
+      } else if (state === 'pause' && now > pauseUntil) pickTarget();
+      if (bubble && !bubble.hidden) placeBubble();
+      requestAnimationFrame(tick);
+    }
+
+    function placeBubble() {
+      const w = street!.clientWidth, bw = bubble!.offsetWidth, head = sam!.offsetTop + sam!.offsetHeight * 0.08;
+      const cx = x + sam!.offsetWidth / 2;
+      let left = Math.max(12, Math.min(w - bw - 12, cx - bw / 2));
+      let top = head - bubble!.offsetHeight - 14;
+
+      if (card) {
+        const c = rel(card), hits = left < c.r && left + bw > c.l && top < c.b && top + bubble!.offsetHeight > c.t;
+        if (hits) { if (c.r + 12 + bw <= w - 12) left = c.r + 12; else top = c.b + 12; }
+      }
+      bubble!.style.left = `${left}px`;
+      bubble!.style.top = `${top}px`;
+      bubble!.style.bottom = 'auto';
+      bubble!.style.setProperty('--tail', `${Math.max(14, Math.min(bw - 14, cx - left))}px`);
+    }
+    function say(text: string, ms: number) {
+      bubbleText!.textContent = text; answers!.hidden = true; bubble!.hidden = false; placeBubble();
+      setTimeout(() => { bubble!.hidden = true; state = 'pause'; pauseUntil = performance.now() + 1500; }, ms);
+    }
+    function ask() {
+      bubbleText!.textContent = 'Was that UFO supposed to be there?';
+      answers!.hidden = false; bubble!.hidden = false; placeBubble();
+    }
+
+    new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting) && !asked) {
+        wantsToAsk = true;
+        if (reduce) { asked = true; state = 'talk'; ask(); }
+        else if (state === 'pause') pauseUntil = 0;
+      }
+    }, { threshold: 0.45 }).observe(street);
+
+    street.querySelector('[data-no]')!.addEventListener('click', () => say('Must have been a weather balloon.', 2600));
+    street.querySelector('[data-yes]')!.addEventListener('click', () => { answers.hidden = true; bubble.hidden = true; abduct(); });
+
+    async function abduct() {
+      if (palGone) return;
+      palGone = true;
+      const u = ufo!, p = pal!, w = street!.clientWidth;
+      u.hidden = false;
+      const uw = u.offsetWidth, uh = u.offsetHeight;
+      const px = p.offsetLeft + p.offsetWidth / 2, ptop = p.offsetTop;
+      const hoverX = px - uw / 2, hoverY = ptop - uh - (narrow() ? 90 : 150);
+      const beamLen = p.offsetTop + p.offsetHeight - (hoverY + uh * 0.7);
+      beam!.style.setProperty('--beam', `${beamLen}px`);
+      const at = (dx: number, dy: number) => `translate(${dx}px, ${dy}px)`;
+      const T = (ms: number) => (reduce ? 1 : ms);
+
+      await u.animate([{ transform: at(w + 40, hoverY - 320) }, { transform: at(hoverX + 30, hoverY + 10), offset: 0.85 }, { transform: at(hoverX, hoverY) }],
+        { duration: T(1300), easing: 'steps(18, end)', fill: 'forwards' }).finished;
+
+      await beam!.animate([{ scale: '1 0' }, { scale: '1 1' }], { duration: T(380), easing: 'steps(5, end)', fill: 'forwards' }).finished;
+
+      const lift = hoverY + uh * 0.5 - ptop;
+      await p.animate([{ translate: '0 0', opacity: 1, scale: '-1 1' }, { translate: `0 ${lift * 0.15}px`, offset: 0.2, scale: '-1 1' },
+        { translate: `0 ${lift}px`, opacity: 0, scale: '-0.3 0.3' }], { duration: T(1500), easing: 'cubic-bezier(.5,0,.9,.6)', fill: 'forwards' }).finished;
+      p.hidden = true;
+      await beam!.animate([{ scale: '1 1' }, { scale: '1 0' }], { duration: T(260), easing: 'steps(4, end)', fill: 'forwards' }).finished;
+
+      await u.animate([{ transform: at(hoverX, hoverY) }, { transform: at(hoverX - 20, hoverY + 14), offset: 0.3 }, { transform: at(-uw - 60, hoverY - 420) }],
+        { duration: T(650), easing: 'steps(10, end)', fill: 'forwards' }).finished;
+      u.hidden = true;
+      say('…he owed me a slice.', 3000);
+    }
+
+    if (reduce) { setSprite(false); draw(); }
+    else { draw(); requestAnimationFrame(tick); }
+    addEventListener('resize', () => { const [a, b] = range(), w = street!.clientWidth; x = Math.min(Math.max(x, a * w), b * w); target = x; draw(); });
+  }
+</script>

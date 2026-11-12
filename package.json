@@ -1,0 +1,14 @@
+{
+  "name": "16-Bit Con",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.18.2",
+    "lenis": "^1.1.13"
+  }
+}
